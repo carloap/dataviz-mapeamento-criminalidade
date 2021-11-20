@@ -1,5 +1,6 @@
 tests/
 *.py[cod]
+venv/
 
 # C extensions
 *.so
