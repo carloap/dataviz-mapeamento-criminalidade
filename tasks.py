@@ -1,6 +1,5 @@
 from invoke import task
 from src.data.Extracao import Extracao as ext
-import pprint as pp
 
 # Tarefa teste de saudação em shell
 @task
