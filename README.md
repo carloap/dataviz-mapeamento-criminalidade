@@ -1,20 +1,32 @@
 # DataViz Team - Mapeamento de Criminalidade no Ceará
 
-Melhorar a eficiência dos serviços de segurança, policiamento, controle e vigilância, utilizando os dados oficiais do SSPDS do estado do Ceará.
+Nossa missão é tratar dos problemas relacionados à crimes por arma de fogo, roubos e homicídios no estado do Ceará, para melhorar a eficiência de serviços de segurança, policiamento e vigilância, e manter a ordem sob controle.
 
 ## Objetivos e resultados chave
 
-Utilizar dados oficiais dos Sistemas de Segurança Pública do Ceará, para ajudar na identificação e predição de possíveis fatores e variáveis ligadas a ocorrência de crime, roubos e homicídios, e melhorar a eficiência desses serviços.
+Vamos ajudar na tomada de decisão para a resolução de problemas de criminalidade no estado do Ceará.
 
- - Realizar uma análise exploratória de dados de <conjunto de dados>
-    - Indentificar variáveis, descrevê-las e definir os tipos de dados
-    - Realizar transformação de variáveis (codificação)
-    - Tratar de valores faltantes e valores discrepantes
-    - ...
- - Criar modelo de detecção de fakenews
-    - Realizar transformação de dados textuais utilizando o tf-idf
-    - ...
- - ...
+Inicialmente vamos identificar as variáveis e possíveis fatores ligados na ocorrência de crimes por arma de fogo, roubos e homicídios, e posteriormente, criar *insights* de como podemos melhorar a eficiência de serviços de segurança pública, baseado em dados.
+
+Os dados são extraídos do sistema SSPDS-CE (Secretaría de Segurança Pública e Defesa Social do Ceará), e este conjunto de dados reflete incidentes de crimes relatados de 2015 até o presente, exceto os 30 dias mais recentes.
+
+> DISCLAIMER: As classificações preliminares de crimes podem ser alteradas posteriormente com base em investigações adicionais, e sempre há a possibilidade de erro mecanico ou humano nos dados.
+
+Os objetivos e resultados-chave são:
+
+ - Realizar uma análise exploratória de dados (EDA) de crimes por arma de fogo, roubos e homicídios
+    - Preparação dos dados 
+    - Identificar variáveis, descrevê-las e definir os tipos de dados
+    - Realizar transformação e sanitização dos dados (codificação)
+    - Tratar valores faltantes e discrepantes
+ - Mapear o comportamento de criminalidade
+    - Aplicar dados de densidade populacional
+    - Aplicar dados socio-econômicos
+    - Determinar o fator ocorrência por tipologia (Natureza da causa)
+ - Criar modelo de predição de crimes
+    - Determinar o índice relativo de ocorrências
+    - Simular e otimizar modelo preditivo
+
 
 ## Conteúdo
 
@@ -26,9 +38,8 @@ Descreva aqui quais os passos necessários (dependências externas, comandos, et
 
 ## Desenvolvedores
  - [Carlos Alberto](https://github.com/carloap)
- - [Fernando Junior]()
+ - [Fernando Junior](https://github.com/jfernandojr)
  - [Luis Fernando](https://github.com/LuisFernandoASilva)
  - [Marcos Andrey](https://github.com/marcosandrey85)
- - [Willian Martins]()
-
+ - [Willian Martins](https://github.com/WIllianMartins2018)
 
