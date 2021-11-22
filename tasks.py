@@ -17,7 +17,26 @@ def help(c):
 
 # Tarefa para extrair dados dos arquivos PDF do SSPDS-CE
 @task
-def extrairPDFSSPCE(c):
-    lista_fontes_pdf = ext.identificarArquivosFontesPDF()
+def extrairPDF(c):
+    print("Identificando arquivos de fontes PDF")
+    caminho_fontes_pdf = 'data/external/sspds-ce/cvli'
+    lista_fontes_pdf = ext.identificarArquivos(caminho_fontes_pdf)
+
+    print("Extraindo conteúdo para CSV")
     for arquivo in lista_fontes_pdf:
         ext.extrairPdfSSPCE(arquivo)
+
+# Tarefa para gerar dataset consolidado
+@task
+def gerarDataset(c):
+    print("Identificar arquivos extraidos")
+    caminho_dos_extraidos = 'data/processed/sspds-ce/cvli'
+    lista_extraidos = ext.identificarArquivos(caminho_dos_extraidos)
+    print("Gerar dataset consolidado para analise exploratoria")
+    ext.gerarDataset(lista_extraidos)
+
+    print("Removendo arquivos sem uso")
+    c.run("rm -rf data/processed/sspds-ce/cvli")
+
+    print("OK!")
+

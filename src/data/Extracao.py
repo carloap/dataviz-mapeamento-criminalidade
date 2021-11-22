@@ -2,7 +2,6 @@ import os
 import re
 from src.data.ManipularArquivo import ManipularArquivo as mArq
 
-
 # # Solução paliativa para obter o diretório raiz do projeto (não é necessário por enquanto)
 # ROOT_DIR = os.path.dirname(os.path.abspath(f'{__file__}/../..'))
 
@@ -10,15 +9,15 @@ from src.data.ManipularArquivo import ManipularArquivo as mArq
 class Extracao:
 
     # Varrer os arquivos fontes, desconsiderando possíveis arquivos ocultos
-    def identificarArquivosFontesPDF():
-        diretorio_do_estudo = 'data/external/sspds-ce/cvli'
-        # diretorio_do_estudo = 'data/external/sspds-ce/cvli/2015/CVLI_diario_2015_Outubro.pdf'
+    def identificarArquivos(caminho):
+        diretorio_do_estudo = caminho
 
         lista_arquivos = mArq.varrerDiretorio(diretorio_do_estudo)
         ignorar = ('.', '..')
         lista_fontes_pdf = list(filter(lambda l: l.split('/')[-1][0:1] not in ignorar, lista_arquivos))
 
         return lista_fontes_pdf
+
 
     # Ler conteúdo das fontes em PDF do SSPDS-CE, e formatar os campos
     def extrairPdfSSPCE(arquivo):
@@ -127,7 +126,7 @@ class Extracao:
                         linha_limpa = rx_3.sub(r'\g<1>;\g<2> ', linha_limpa) # tratamento de campo mapeado incorreto por texto ruim #1
 
                         # DEBUG
-                        print(linha_limpa)
+                        # print(linha_limpa)
 
                         # escreve em arquivo linha a linha
                         mArq.escreverTXT(arquivo_destino, f'{linha_limpa}\n')
@@ -136,5 +135,36 @@ class Extracao:
                     print(f" - Erro no indexador: {ex}")
                     print(f" - conteudo: {linha_limpa}")
 
+
+    # Gerar dataset consolidado para analise, a partir dos dados extraídos
+    def gerarDataset(arquivos):
+        arquivo_destino = 'data/processed/sspds-ce/dataset_consolidado.csv'
+
+        # Remove o arquivo destino, para criar um novo
+        mArq.removerArquivo(arquivo_destino)
+
+        # cabecalho do dataset padrão (8 colunas)
+        cabecalho_padronizado = "ID;AIS;MUNICIPIO;NATUREZA DO FATO;ARMA UTILIZADA;DATA;SEXO;IDADE"
+
+        for arquivo in arquivos:
+            # Lê conteúdo do arquivo
+            conteudo_arquivo = mArq.abrirTXT(arquivo)
+
+            # iterar linha a linha
+            for linha in conteudo_arquivo.splitlines():
+                coluna = linha.split(';')
+                # tl;dr 
+                # se o conjunto extraído tiver mais que 8 colunas, eliminar as informações que não interessam
+                if len(coluna) == 10:
+                    del coluna[7]
+                    del coluna[6]
+
+                    linha_limpa = ";".join(coluna)
+
+                    # escreve em arquivo linha a linha
+                    mArq.escreverTXT(arquivo_destino, f'{linha_limpa}\n')
+                else:
+                    # escreve em arquivo linha a linha
+                    mArq.escreverTXT(arquivo_destino, f'{linha}\n')
 
 

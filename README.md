@@ -30,11 +30,46 @@ Os objetivos e resultados-chave são:
 
 ## Conteúdo
 
-Utilize esta seção para descrever o que cada notebook faz. Se tiver gerado algum relatório, também utilize essa seção para descrevêlo. Isso facilitará a leitura.
+O notebook #01 consiste em explorar os dados consolidados de crimes relatados pelo SSPDS-CE, a fim de encontrar padrões nos dados, ou informações relevantes que ajudem a explicar, pelo menos parcialmente, a causa das ocorrências de crime.
+
+ - Notebook: 01-analise-exploratoria
+    - Identificação das variáveis, definição de tipos de dados e descrição
+    - Transformação e sanitização de dados
 
 ## Utilização
 
-Descreva aqui quais os passos necessários (dependências externas, comandos, etc.) para replicar o seu projeto. Instalação de dependências necessárias, criação de ambientes virtuais, etc. Este modelo é baseado em um projeto utilizando o [Poetry](https://python-poetry.org/) como gerenciador de dependências e ambientes virtuais. Você pode utilizar o `conda`, ambientes virtuais genéricos do Python ou até mesmo containers do docker. Mas tente fazer algo que seja facilmente reprodutível.
+Para reproduzir os notebooks do projeto, essencialmente é recomendável ter o ```Python 3.8``` instalado, e a versão mais recente do [Poetry](https://python-poetry.org/) como gerenciador de dependências e ambientes virtuais.
+
+> OBS: Também é recomendável ter o ```Java 7+``` instalado, caso queira executar as funções de processamento de arquivos PDF, que é uma dependência do módulo [Tika](https://github.com/chrismattmann/tika-python) para o Python
+
+### 1. Clonar o projeto
+```shell
+git clone git@github.com:carloap/dataviz-mapeamento-criminalidade.git
+cd dataviz-mapeamento-criminalidade
+```
+
+### 2. Instalar as dependências
+```shell
+poetry install
+```
+
+### 3. (Não obrigatório) Gerar novo dataset consolidado
+
+Este passo não é necessário, pois o dataset consolidado para analise já consta no repositório. 
+
+No futuro, se for necessário coletar mais dados para atualização do dataset, esses passos serão necessários.
+```shell
+poetry run invoke extrairPDF
+poetry run invoke gerarDataset
+```
+
+### 4. Definir o Ambiente Virtual para reproduzir os Notebooks
+Feito isso, defina o ambiente virtual criado pelo Poetry em sua aplicação para reprodução dos notebooks, no ```JupyterLab``` ou ```VSCode``` por exemplo.
+
+Para ajudar, verifique qual é o nome do ambiente virtual ```ativo``` no momento, com esse comando.
+```shell
+poetry env list
+```
 
 ## Desenvolvedores
  - [Carlos Alberto](https://github.com/carloap)
