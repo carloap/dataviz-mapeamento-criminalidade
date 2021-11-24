@@ -32,7 +32,7 @@ Os objetivos e resultados-chave são:
 
 O notebook #01 consiste em explorar os dados consolidados de crimes relatados pelo SSPDS-CE, a fim de encontrar padrões nos dados, ou informações relevantes que ajudem a explicar, pelo menos parcialmente, a causa das ocorrências de crime.
 
- - Notebook: 01-analise-exploratoria
+ - Notebook: [01-analise-exploratoria](notebooks/01-analise-exploratoria.ipynb)
     - Identificação das variáveis, definição de tipos de dados e descrição
     - Transformação e sanitização de dados
 
