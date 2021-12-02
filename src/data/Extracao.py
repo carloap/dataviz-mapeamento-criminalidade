@@ -33,7 +33,7 @@ class Extracao:
 
         # Inicializa cabeçalho, e modifica conforme parâmetros do ano da fonte
         cabecalho = "ID;AIS;MUNICIPIO;NATUREZA DO FATO;ARMA UTILIZADA;DATA;SEXO;IDADE"
-        anos_formato_antigo = ('2019', '2018', '2017', '2016', '2015')
+        anos_formato_antigo = ('2019', '2018', '2017', '2016', '2015', '2014')
         if any(ano in arquivo_origem for ano in anos_formato_antigo):
             cabecalho = "ID;AIS;MUNICIPIO;NATUREZA DO FATO;ARMA UTILIZADA;DATA DA MORTE;NOME VITIMA;GUIA-CADAV;SEXO;IDADE"
 
@@ -43,17 +43,19 @@ class Extracao:
         # compila as expressões regulares para separação de colunas (essa função é bem específica)
         r2 = re.compile(r'(\s)(AIS.[0-9]{1,2}|AIS.+DEFINIDA|AIS.+Identificada.+\)|AIS.+IDENTIFICADA.+\))(\s)')
         r4 = re.compile(r'(\s)(?!UNID|PRISI|Identific)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)([A-Z]{1}[a-z]{2})')
-        r4_2 = re.compile(r'(\s)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)(ARMA.+|Arma.+|AMA.+|Ama.+|ARAM.+|Aram.+|NI|Ni|NÃO INF)(.+[0-9]{1,}/[0-9]{2}/|.+[0-9]{1,}-[A-z]{3}-)')
-        r4_3 = re.compile(r'(\s)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)(Outros|OUTROS|OUTRO|Outro)(.+[0-9]{1,}/[0-9]{2}/|.+[0-9]{1,}-[A-z]{3}-)')
+        r4_2 = re.compile(r'(\s)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)(ARMA.+|Arma.+|AMA.+|Ama.+|ARAM.+|Aram.+|NI|Ni|NÃO INF)(.+[0-9]{1,}/[0-9]{2}/|.+[0-9]{1,}-[A-z]{3}-|.+[0-9]{1,}/[A-z]{3}/)')
+        r4_3 = re.compile(r'(\s)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)(Outros|OUTROS|OUTRO|Outro)(.+[0-9]{1,}/[0-9]{2}/|.+[0-9]{1,}-[A-z]{3}-|.+[0-9]{1,}/[A-z]{3}/)')
         r4_4 = re.compile(r'(\s)(HOMI|FEMI|LES|ROU|MORTE SUS.+)([A-Ö]{2}.+[A-Z\)])(\s)(.+)(\s[0-9]{1,}/[0-9]{2}/|\s[0-9]{1,}-[A-z]{3}-)')
         r4_5 = re.compile(r'(\s)(ARMA.+|Arma.+|AMA DE.+|Ama de.+|ARAM.+|Aram.+|NI|Ni|NÃO INF)(.+)(\s[0-9]{1,}/[0-9]{2}/|\s[0-9]{1,}-[A-z]{3}-)')
         r6 = re.compile(r'(\s)([0-9]{1,}/[0-9]{2}/[0-9]{4})(\s)')
-        r6_2 = re.compile(r'(\s)([0-9]{1,}-[A-z]{3}-[0-9]{2,4})(\s)')
+        r6_2 = re.compile(r'(\s)([0-9]{1,}-[A-z]{3}-[0-9]{2,4}|[0-9]{1,}/[A-z]{3}/[0-9]{2,4})(\s)')
         r8 = re.compile(r'(\s)([0-9]{1,}|-)$')
         r8_2 = re.compile(r'(\s)([0-9]{1,}\-[0-9\s]{1,}\/2[0-9]{2,4}|\-\/|[0-9]{3}\s\-[0-9]{1,}\/2[0-9]{2,4}|[0-9]{3}\-[0-9]{4})(\s)')
         r8_3 = re.compile(r'(ICADO|icado)(\-)$')
         rx_1 = re.compile(r'(\s)(Unidade Prisional|UNIDADE PRISIONAL|UNIDADE PRISIONA 00L)(\s)')
         rx_3 = re.compile(r'(MORTE)(ARMA)\;') # Campos mapeados incorretamente por erro de texto #1 
+        rx_4 = re.compile(r'(M$|F$)')
+        rx_5 = re.compile(r'(.......................)(\s)(M;|F;)') # workaround
 
         # Inicializa um acumulador para linhas quebradas
         linha_acumulada = ''
@@ -105,7 +107,7 @@ class Extracao:
 
                     # Se o conjunto total da linha for válido, preencher com o valor
                     if len(linha_acumulada)>12 and linha_acumulada[0].isnumeric() and (" AIS " in linha_acumulada or "UNIDADE" in linha_acumulada or "Unidade" in linha_acumulada) and ((linha_acumulada[-1].isnumeric() and linha_acumulada[-2] in " ") or (linha_acumulada[-2:].isnumeric() and linha_acumulada[-3] in " ") or linha_acumulada[-2:] in " -"
-                        or linha_acumulada[-6:] in "ICADO-"
+                        or linha_acumulada[-6:] in "ICADO-" or linha_acumulada[-2:] in " M"
                     ):
                         linha_limpa = linha_acumulada.replace('  ',' ')
                         linha_acumulada = '' # reseta o acumulador de linhas
@@ -124,9 +126,15 @@ class Extracao:
                         linha_limpa = r8_3.sub(r'\g<1>;\g<2>', linha_limpa) # campo com valor "não identificado"
                         linha_limpa = rx_1.sub(r';\g<2>;', linha_limpa) # tratamento do campo "unidade prisional"
                         linha_limpa = rx_3.sub(r'\g<1>;\g<2> ', linha_limpa) # tratamento de campo mapeado incorreto por texto ruim #1
+                        linha_limpa = rx_4.sub(r'\g<1>;', linha_limpa)
+                        linha_limpa = rx_5.sub(r'\g<1>;;\g<3>', linha_limpa) # workaround
+
+                        # # ajuste de campo vazio
+                        # if linha_acumulada[-2:] in " M":
+                        #     linha_limpa += ";"
 
                         # DEBUG
-                        # print(linha_limpa)
+                        print(linha_limpa)
 
                         # escreve em arquivo linha a linha
                         mArq.escreverTXT(arquivo_destino, f'{linha_limpa}\n')

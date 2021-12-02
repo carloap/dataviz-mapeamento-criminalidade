@@ -19,7 +19,7 @@ def help(c):
 @task
 def extrairPDF(c):
     print("Identificando arquivos de fontes PDF")
-    caminho_fontes_pdf = 'data/external/sspds-ce/cvli'
+    caminho_fontes_pdf = 'data/external/sspds-ce/cvli/2014'
     lista_fontes_pdf = ext.identificarArquivos(caminho_fontes_pdf)
 
     print("Extraindo conteúdo para CSV")
